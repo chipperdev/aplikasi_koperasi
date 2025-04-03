@@ -1,7 +1,11 @@
 <?php
 
+use App\Http\Controllers\PengurusController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PengawasController;
+use App\Http\Controllers\AnggotaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,17 +21,30 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
 Route::get('/test', function(){
     return response([
-        'pesan'=> 'Api siap',
+        'pesan'=> 'API siap',
     ]);
 });
 
-// route api controller
-use App\Http\Controllers\AuthController;
-
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum'])->group(function () {
+
     Route::post('/logout', [AuthController::class, 'logout']);
+
+    Route::middleware(['auth:sanctum', 'role:pengawas'])->group(function () {
+        Route::get('/pengawas/pending-members', [PengawasController::class, 'pendingMembers']);
+        Route::post('/pengawas/approve-member/{id}', [PengawasController::class, 'approveMember']);
+        Route::post('/pengawas/reject-member/{id}', [PengawasController::class, 'rejectMember']);
+    });
+
+    Route::middleware('role:pengurus')->group(function () {
+        Route::get('/dashboard/pengurus', [PengurusController::class, 'index']);
+    });
+
+    Route::middleware('role:anggota')->group(function () {
+        Route::get('/dashboard/anggota', [AnggotaController::class, 'index']);
+    });
 });

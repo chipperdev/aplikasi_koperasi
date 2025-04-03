@@ -21,4 +21,5 @@ class UserSeeder extends Seeder
             'password' => Hash::make('password123') // Gunakan bcrypt untuk hashing
         ]);
     }
+    
 }

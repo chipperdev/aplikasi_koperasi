@@ -41,4 +41,18 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function isPengawas()
+    {
+        return $this->role === 'pengawas';
+    }
+    public function isPengurus()
+    {
+        return $this->role === 'pengurus';
+    }
+
+    public function isAnggota()
+    {
+        return $this->role === 'anggota';
+    }
 }
