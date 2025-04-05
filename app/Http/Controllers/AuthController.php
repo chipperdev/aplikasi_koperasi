@@ -11,26 +11,61 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    public function login(Request $request)
-    {
-        $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
+
+    public function register(Request $request)
+{
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:users,email',
+        'password' => 'required|string|min:6|confirmed',
+    ]);
+
+    $user = User::create([
+        'name' => $validated['name'],
+        'email' => $validated['email'],
+        'password' => Hash::make($validated['password']),
+        'status' => 'pending',
+        'role' => 'anggota',
+    ]);
+
+    return response()->json([
+        'message' => 'Pendaftaran berhasil. Menunggu persetujuan pengawas.'
+    ], 201);
+}
+
+public function login(Request $request)
+{
+    $request->validate([
+        'email' => 'required|email',
+        'password' => 'required',
+    ]);
+
+    $user = User::where('email', $request->email)->first();
+
+    if (! $user || ! Hash::check($request->password, $user->password)) {
+        throw ValidationException::withMessages([
+            'email' => ['Email atau password salah.'],
         ]);
-    
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
-            $token = $user->createToken('authToken')->plainTextToken;
-    
-            return response()->json([
-                'message' => 'Login berhasil',
-                'token' => $token,
-                'role' => $user->role
-            ], 200);
-        }
-    
-        return response()->json(['message' => 'Login gagal'], 401);
     }
+
+    if ($user->status !== 'approved') {
+        return response()->json([
+            'message' => 'Akun belum disetujui oleh pengawas.'
+        ], 403);
+    }
+
+    $token = $user->createToken('auth_token')->plainTextToken;
+
+    return response()->json([
+        'access_token' => $token,
+        'token_type' => 'Bearer',
+        'role' => $user->role,         // ← tambahkan ini
+        'status' => $user->status,     // ← tambahkan ini
+    ]);
+    
+}
+
+
 
     public function logout(Request $request)
     {
