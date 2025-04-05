@@ -43,9 +43,9 @@ public function login(Request $request)
     $user = User::where('email', $request->email)->first();
 
     if (! $user || ! Hash::check($request->password, $user->password)) {
-        throw ValidationException::withMessages([
-            'email' => ['Email atau password salah.'],
-        ]);
+        return response()->json([
+            'message' => 'Email atau password salah.'
+        ], 401);
     }
 
     if ($user->status !== 'approved') {
@@ -59,10 +59,9 @@ public function login(Request $request)
     return response()->json([
         'access_token' => $token,
         'token_type' => 'Bearer',
-        'role' => $user->role,         // ← tambahkan ini
-        'status' => $user->status,     // ← tambahkan ini
-    ]);
-    
+        'role' => $user->role,
+        'status' => $user->status,
+    ], 200);
 }
 
 

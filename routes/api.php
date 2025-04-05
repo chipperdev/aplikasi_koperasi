@@ -37,14 +37,16 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
     Route::middleware(['auth:sanctum', 'role:pengawas'])->group(function () {
-        Route::get('/pengawas/pending-members', [PengawasController::class, 'pendingMembers']);
-        Route::post('/pengawas/approve-member/{id}', [PengawasController::class, 'approveMember']);
-        Route::post('/pengawas/reject-member/{id}', [PengawasController::class, 'rejectMember']);
+        Route::get('/dashboard/pengawas', [PengawasController::class, 'index']);
     });
 
-    Route::middleware('role:pengurus')->group(function () {
+    Route::middleware(['auth:sanctum', 'role:pengurus'])->group(function () {
         Route::get('/dashboard/pengurus', [PengurusController::class, 'index']);
+        Route::get('/anggota/pending', [PengurusController::class, 'listPendingAnggota']);
+        Route::post('/anggota/{id}/approve', [PengurusController::class, 'approveAnggota']);
+        Route::post('/anggota/{id}/reject', [PengurusController::class, 'rejectAnggota']);
     });
+    
 
     Route::middleware('role:anggota')->group(function () {
         Route::get('/dashboard/anggota', [AnggotaController::class, 'index']);
