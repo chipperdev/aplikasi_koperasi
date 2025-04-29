@@ -17,24 +17,30 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         User::create([
-            'username' => 'Pengawas 2',
-            'email' => 'pengawas2@example.com',
-            'password' => Hash::make('password123'),
+            'nama' => 'Siti Pengawas',
+            'no_telepon' => '089876543210',
+            'password' => Hash::make('pengawas123'),
             'role' => 'pengawas',
-            'status' => 'approved'
+            'status' => 'aktif',
         ]);
 
-        // Buat akun anggota
         User::create([
-            'username' => 'Anggota 2',
-            'email' => 'anggota2@example.com',
-            'password' => Hash::make('password123'),
-            'role' => 'anggota',
-            'status' => 'pending'
+            'nama' => 'Budi Pengurus',
+            'no_telepon' => '089876543211',
+            'password' => Hash::make('pengurus123'),
+            'role' => 'pengurus',
+            'status' => 'aktif',
         ]);
 
-        
 
-        
+
+        User::create([
+            'nama' => 'Ani Anggota',
+            'no_telepon' => '089876543212',
+            'password' => Hash::make('anggota123'),
+            'role' => 'anggota',
+            'status' => 'aktif',
+        ]);
+
     }
 }

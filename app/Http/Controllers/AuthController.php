@@ -2,83 +2,46 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
 class AuthController extends Controller
 {
-
-    public function register(Request $request)
-{
-    $validated = $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|email|unique:users,email',
-        'password' => 'required|string|min:6|confirmed',
-    ]);
-
-    $user = User::create([
-        'name' => $validated['name'],
-        'email' => $validated['email'],
-        'password' => Hash::make($validated['password']),
-        'status' => 'pending',
-        'role' => 'anggota',
-    ]);
-
-    return response()->json([
-        'message' => 'Pendaftaran berhasil. Menunggu persetujuan pengawas.'
-    ], 201);
-}
-
-public function login(Request $request)
-{
-    $request->validate([
-        'email' => 'required|email',
-        'password' => 'required',
-    ]);
-
-    $user = User::where('email', $request->email)->first();
-
-    if (! $user || ! Hash::check($request->password, $user->password)) {
-        return response()->json([
-            'message' => 'Email atau password salah.'
-        ], 401);
-    }
-
-    if ($user->status !== 'approved') {
-        return response()->json([
-            'message' => 'Akun belum disetujui oleh pengawas.'
-        ], 403);
-    }
-
-    $token = $user->createToken('auth_token')->plainTextToken;
-
-    return response()->json([
-        'access_token' => $token,
-        'token_type' => 'Bearer',
-        'role' => $user->role,
-        'status' => $user->status,
-    ], 200);
-}
-
-
-
-    public function logout(Request $request)
+    public function login(Request $request)
     {
-        $user = Auth::user();
+        $request->validate([
+            'no_telepon' => 'required',
+            'password' => 'required',
+        ]);
 
-        if ($user) {
-            $user->tokens()->delete(); // Menghapus semua token user
+        $user = User::where('no_telepon', $request->no_telepon)->first();
+
+        if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
-                'message' => 'Logout berhasil'
-            ], 200);
+                'message' => 'Nomor telepon atau password salah'
+            ], 401);
         }
 
+        if ($user->status != 'aktif') {
+            return response()->json([
+                'message' => 'Akun Anda belum diverifikasi oleh pengurus.'
+            ], 403);
+        }
+
+        $token = $user->createToken('token')->plainTextToken;
+
         return response()->json([
-            'message' => 'Tidak ada pengguna yang login'
-        ], 401);
+            'message' => 'Login berhasil',
+            'token' => $token,
+            'user' => [
+                'id' => $user->id,
+                'nama' => $user->nama,
+                'role' => $user->role,
+                'status' => $user->status,
+            ]
+        ]);
     }
 }

@@ -2,35 +2,36 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Auth\Passwords\CanResetPassword as CanResetPasswordTrait;
-use Illuminate\Auth\Notifications\ResetPassword;
 
-
-class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
+class User extends Authenticatable implements CanResetPassword
 {
     use HasApiTokens, HasFactory, Notifiable, CanResetPasswordTrait;
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
+     * Mass assignable attributes.
      */
     protected $fillable = [
-        'name',
-        'email',
+        'nama',
+        'no_telepon',
         'password',
+        'nip',
+        'tempat_lahir',
+        'tanggal_lahir',
+        'alamat_rumah',
+        'unit_kerja',
+        'sk_perjanjian_kerja',
+        'role',
+        'status',
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
+     * Hidden attributes.
      */
     protected $hidden = [
         'password',
@@ -38,18 +39,13 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
     ];
 
     /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
+     * Role checkers.
      */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
-
     public function isPengawas()
     {
         return $this->role === 'pengawas';
     }
+
     public function isPengurus()
     {
         return $this->role === 'pengurus';
@@ -59,10 +55,12 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
     {
         return $this->role === 'anggota';
     }
+
+    /**
+     * Custom password reset notification.
+     */
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new \App\Notifications\ResetPasswordCustom($token));
     }
-    
 }
-

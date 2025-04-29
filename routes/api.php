@@ -31,9 +31,9 @@ Route::get('/test', function(){
 });
 
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/register', [AuthController::class, 'register']);
+#Route::post('/register', [AuthController::class, 'register']);
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink']);
-Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'])->name('password.reset');
+Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'])->name('password.reset') ;
 
 
 
