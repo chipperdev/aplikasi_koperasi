@@ -23,7 +23,8 @@ return new class extends Migration
         $table->date('tanggal_lahir')->nullable();
         $table->text('alamat_rumah')->nullable();
         $table->string('unit_kerja')->nullable();
-        $table->string('sk_perjanjian_kerja')->nullable(); // path file bukti kerja
+        $table->string('sk_perjanjian_kerja')->nullable();
+        $table->string('photo_path')->nullable();
         $table->enum('role', ['anggota', 'pengawas', 'pengurus'])->default('anggota');
         $table->enum('status', ['menunggu', 'aktif', 'ditolak'])->default('menunggu');
         $table->rememberToken();
