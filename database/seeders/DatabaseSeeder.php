@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
 
         User::create([
             'nama' => 'Budi Pengurus',
+            'nip' => '1234567890',
             'no_telepon' => '089876543211',
             'password' => Hash::make('pengurus123'),
             'role' => 'pengurus',

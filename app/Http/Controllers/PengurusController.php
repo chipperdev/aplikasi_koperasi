@@ -34,7 +34,7 @@ class PengurusController extends Controller
             return response()->json(['message' => 'Anggota tidak ditemukan.'], 404);
         }
 
-        $anggota->status = 'approved';
+        $anggota->status = 'aktif';
         $anggota->save();
 
         return response()->json(['message' => 'Anggota berhasil disetujui.']);
@@ -48,7 +48,7 @@ class PengurusController extends Controller
             return response()->json(['message' => 'Anggota tidak ditemukan.'], 404);
         }
 
-        $anggota->status = 'rejected';
+        $anggota->status = 'ditolak';
         $anggota->save();
 
         return response()->json(['message' => 'Anggota berhasil ditolak.']);
