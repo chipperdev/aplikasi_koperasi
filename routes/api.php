@@ -48,6 +48,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/anggota/pending', [PengurusController::class, 'listPendingAnggota']);
         Route::post('/anggota/{id}/approve', [PengurusController::class, 'approveAnggota']);
         Route::post('/anggota/{id}/reject', [PengurusController::class, 'rejectAnggota']);
+        Route::get('/pengurus/jumlah-anggota', [PengurusController::class, 'jumlahAnggota']);
+
     });
     
 

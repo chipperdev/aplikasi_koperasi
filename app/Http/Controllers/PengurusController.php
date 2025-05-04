@@ -14,7 +14,7 @@ class PengurusController extends Controller
             'message' => 'Selamat datang di dashboard pengawas'
         ]);
     }
-    
+
     public function __construct()
     {
         $this->middleware(['auth:sanctum', 'role:pengurus']);
@@ -52,6 +52,12 @@ class PengurusController extends Controller
         $anggota->save();
 
         return response()->json(['message' => 'Anggota berhasil ditolak.']);
+    }
+
+    public function jumlahAnggota()
+    {
+        $jumlah = User::where('role', 'anggota')->count();
+        return response()->json(['total_anggota' => $jumlah]);
     }
 
 }
