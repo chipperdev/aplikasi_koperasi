@@ -80,4 +80,33 @@ class PengurusController extends Controller
             'total_anggota' => $jumlah
         ]);
     }
+
+    public function detailStatusPendaftaran($id)
+    {
+        try {
+            $anggota = User::where('id', $id)->where('role', 'anggota')->firstOrFail();
+
+            $message = match ($anggota->status) {
+                'aktif' => 'Pendaftaran Berhasil Diterima',
+                'ditolak' => 'Pendaftaran Ditolak',
+                'pending' => 'Menunggu Persetujuan',
+                default => 'Status tidak diketahui',
+            };
+
+            return response()->json([
+                'status' => true,
+                'data' => [
+                    'id' => $anggota->id,
+                    'nama' => $anggota->nama,
+                    'status' => $anggota->status,
+                    'message' => $message,
+                ]
+            ]);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Anggota tidak ditemukan.'
+            ], 404);
+        }
+    }
 }

@@ -36,10 +36,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/anggota/{id}/approve', [PengurusController::class, 'approveAnggota']);
         Route::post('/anggota/{id}/reject', [PengurusController::class, 'rejectAnggota']);
         Route::get('/pengurus/jumlah-anggota', [PengurusController::class, 'jumlahAnggota']);
+        Route::get('/anggota/{id}/status', [PengurusController::class, 'detailStatusPendaftaran']);
     });
 
     // Route untuk role anggota
     Route::middleware('role:anggota')->group(function () {
         Route::get('/dashboard/anggota', [AnggotaController::class, 'index']);
+        Route::get('/anggota/status', [AnggotaController::class, 'statusPendaftaranSaya']);
     });
 });
