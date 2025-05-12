@@ -22,9 +22,6 @@ return new class extends Migration
             $table->string('keterangan')->nullable();
             $table->timestamps();
         });
-        
-        
-        
     }
 
     /**

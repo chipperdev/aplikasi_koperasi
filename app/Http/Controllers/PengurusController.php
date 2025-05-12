@@ -23,8 +23,8 @@ class PengurusController extends Controller
     public function listPendingAnggota()
     {
         $anggota = User::where('role', 'anggota')
-                        ->where('status', 'pending')
-                        ->get();
+            ->where('status', 'pending')
+            ->get();
 
         return response()->json([
             'status' => true,
