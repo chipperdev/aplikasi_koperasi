@@ -34,34 +34,27 @@ class PengurusController extends Controller
 
     public function approveAnggota($id)
     {
-        try {
-            $anggota = User::where('id', $id)->where('role', 'anggota')->firstOrFail();
-            $anggota->status = 'aktif';
-            $anggota->save();
-
-            return response()->json([
-                'status' => true,
-                'message' => 'Anggota berhasil disetujui.',
-                'data' => $anggota
-            ]);
-        } catch (ModelNotFoundException $e) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Anggota tidak ditemukan.'
-            ], 404);
-        }
+        return $this->ubahStatusAnggota($id, 'aktif', 'Anggota berhasil disetujui.');
     }
 
     public function rejectAnggota($id)
     {
+        return $this->ubahStatusAnggota($id, 'ditolak', 'Anggota berhasil ditolak.');
+    }
+
+    private function ubahStatusAnggota($id, $status, $successMessage)
+    {
         try {
-            $anggota = User::where('id', $id)->where('role', 'anggota')->firstOrFail();
-            $anggota->status = 'ditolak';
+            $anggota = User::where('id', $id)
+                           ->where('role', 'anggota')
+                           ->firstOrFail();
+
+            $anggota->status = $status;
             $anggota->save();
 
             return response()->json([
                 'status' => true,
-                'message' => 'Anggota berhasil ditolak.',
+                'message' => $successMessage,
                 'data' => $anggota
             ]);
         } catch (ModelNotFoundException $e) {
@@ -75,6 +68,7 @@ class PengurusController extends Controller
     public function jumlahAnggota()
     {
         $jumlah = User::where('role', 'anggota')->count();
+
         return response()->json([
             'status' => true,
             'total_anggota' => $jumlah
@@ -84,7 +78,9 @@ class PengurusController extends Controller
     public function detailStatusPendaftaran($id)
     {
         try {
-            $anggota = User::where('id', $id)->where('role', 'anggota')->firstOrFail();
+            $anggota = User::where('id', $id)
+                           ->where('role', 'anggota')
+                           ->firstOrFail();
 
             $message = match ($anggota->status) {
                 'aktif' => 'Pendaftaran Berhasil Diterima',
@@ -101,6 +97,27 @@ class PengurusController extends Controller
                     'status' => $anggota->status,
                     'message' => $message,
                 ]
+            ]);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Anggota tidak ditemukan.'
+            ], 404);
+        }
+    }
+
+    public function hapusAnggota($id)
+    {
+        try {
+            $anggota = User::where('id', $id)
+                           ->where('role', 'anggota')
+                           ->firstOrFail();
+
+            $anggota->delete();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Anggota berhasil dihapus.'
             ]);
         } catch (ModelNotFoundException $e) {
             return response()->json([
