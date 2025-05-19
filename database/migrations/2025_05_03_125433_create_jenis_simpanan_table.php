@@ -14,7 +14,7 @@ return new class extends Migration {
     {
         Schema::create('jenis_simpanan', function (Blueprint $table) {
             $table->id();
-            $table->string('nama simpanan'); // contoh: Simpanan Wajib, Sukarela, Pokok
+            $table->string('nama_simpanan'); // contoh: Simpanan Wajib, Sukarela, Pokok
             $table->decimal('jumlah_default', 15, 2)->nullable(); // bisa diisi untuk simpanan wajib
             $table->timestamps();
         });
