@@ -37,11 +37,19 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/anggota/{id}/reject', [PengurusController::class, 'rejectAnggota']);
         Route::get('/pengurus/jumlah-anggota', [PengurusController::class, 'jumlahAnggota']);
         Route::get('/anggota/{id}/status', [PengurusController::class, 'detailStatusPendaftaran']);
+
+        // route simpanan untuk pengurus
+        Route::get('/simpanan', [\App\Http\Controllers\SimpananController::class, 'index']);
+        Route::post('/simpanan', [\App\Http\Controllers\SimpananController::class, 'store']);
     });
 
     // Route untuk role anggota
     Route::middleware('role:anggota')->group(function () {
         Route::get('/dashboard/anggota', [AnggotaController::class, 'index']);
         Route::get('/anggota/status', [AnggotaController::class, 'statusPendaftaranSaya']);
+
+        // route simpanan
+        Route::get('/simpanan', [\App\Http\Controllers\SimpananController::class, 'index']);
+        Route::post('/simpanan', [\App\Http\Controllers\SimpananController::class, 'store']);
     });
 });
